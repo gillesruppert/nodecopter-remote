@@ -17,6 +17,7 @@
   "license": "BSD",
   "dependencies": {
     "ar-drone": "0.0.5",
-    "johnny-five": "~0.5.14"
+    "johnny-five": "~0.5.14",
+    "temporal": "~0.2.2"
   }
 }
