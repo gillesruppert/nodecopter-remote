@@ -1,8 +1,11 @@
 var net = require('net');
 
+var client;
+exports.client = client;
 // server - receives commands
-var server = net.createServer(function (c) {
+var server = exports.server = net.createServer(function (c) {
   console.log('server connected');
+  client = c;
   c.on('end', function () {
     console.log('server disconnected');
   });
