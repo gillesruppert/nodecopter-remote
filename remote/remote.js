@@ -7,22 +7,27 @@ var js1Pins = ['A0', 'A1'];
 //var js2Pins = ['A4', 'A5'];
 var takeoffPin = 2;
 var landPin = 3;
+var upDownPin = 0;
+var turnPin = 1;
+var flipPin = 4;
 var frontBackPin = 4;
 var leftRigthPin = 5;
 
 
 board.on('ready', function () {
 
-  var js1 = new five.Joystick({ pins: js1Pins, freq: 20 });
-  //var js2 = new five.Joystick({ pins: js2Pins });
-
   var takeoff = new five.Button(takeoffPin);
   var land = new five.Button(landPin);
+  var flip = new five.Button(flipPin);
 
+  flip.on('down', function () {
+    console.log('flip');
+  });
+
+  var upDown = new five.Sensor(upDownPin);
+  var turn = new five.Sensor(turnPin);
   var frontBack = new five.Sensor(frontBackPin);
   var leftRight = new five.Sensor(leftRigthPin);
-
-  board.repl.inject({ });
 
   takeoff.on('down', function () {
     console.log('takeoff');
@@ -34,48 +39,83 @@ board.on('ready', function () {
     client.write('land');
   });
 
+  var frontBackLastValue = 10000;
   frontBack.on('read', function (err, value) {
+    if (isSimilar(value, frontBackLastValue)) {
+      return;
+    }
+
+    console.log('frontback', value);
+    frontBackLastValue = value;
+
     if (value > 550) {
       client.write('back');
     } else if (value < 500) {
       client.write('front');
     } else {
-      client.write('stop');
+      client.write('fbstop');
     }
-    console.log('frontback', value);
   });
 
+
+
+  var leftRightLastValue = 10000;
   leftRight.on('read', function (err, value) {
+    if (isSimilar(value, leftRightLastValue)) {
+      return;
+    }
+
+    console.log('leftright', value);
+    leftRightLastValue = value;
+
     if (value > 550) {
       client.write('right');
     } else if (value < 500) {
       client.write('left');
     } else {
-      client.write('stop');
+      client.write('lrstop');
     }
-    console.log('leftRight', value);
   });
 
-  js1.on('axismove', function (err, timestamp) {
-    if (this.fixed.y > 0.55 || this.fixed.y < 0.45) {
-      //console.log('joystick1', this.fixed);
+  var upDownLastValue = 10000;
+  upDown.on('change', function (err, value) {
+    if (isSimilar(value, upDownLastValue)) {
+      return;
     }
-
-    if (this.fixed.y > 0.55) {
+    console.log('updown', value);
+    upDownLastValue = value;
+    if (value > 550) {
       client.write('down');
-    } else if (this.fixed.y < 0.45) {
+    } else if (value < 500) {
       client.write('up');
     } else {
-      client.write('stop');
+      client.write('udstop');
     }
   });
 
+  var turnLastValue = 10000;
+  turn.on('read', function (err, value) {
+    if (isSimilar(value, turnLastValue)) {
+      return;
+    }
 
+    console.log('turn', value);
+    turnLastValue = value;
 
-
-  //js2.on('axismove', function (err, timestamp) {
-    ////console.log('joystick2', this.fixed);
-  //});
-
-
+    if (value > 550) {
+      client.write('clockwise');
+    } else if (value < 480) {
+      client.write('counterClockwise');
+    } else {
+      client.write('turnstop');
+    }
+  });
+  function isSimilar(value, compare, tolerance) {
+    tolerance = tolerance || 10;
+    if (Math.abs(value - compare) > tolerance) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 });
