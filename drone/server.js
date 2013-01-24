@@ -20,10 +20,15 @@ var server = exports.server = net.createServer(function (c) {
       drone.stop();
     } else if (command.indexOf('land') === 0) {
       console.log('land');
+      drone.stop();
       drone.land();
     } else if (command.indexOf('takeoff') === 0) {
       console.log('takeoff');
       drone.takeoff();
+
+    } else if (command.indexOf('flip') === 0) {
+      console.log('flip');
+      drone.animate('flipAhead', 15);
 
 
     } else if (command.indexOf('front') === 0) {

@@ -7,11 +7,12 @@ var js1Pins = ['A0', 'A1'];
 //var js2Pins = ['A4', 'A5'];
 var takeoffPin = 2;
 var landPin = 3;
-var upDownPin = 0;
-var turnPin = 1;
-var flipPin = 4;
-var frontBackPin = 4;
-var leftRigthPin = 5;
+var flipPin = 8;
+
+var upDownPin = 'A0';
+var turnPin = 'A5';
+var frontBackPin = 'A4';
+var leftRigthPin = 'A1';
 
 
 board.on('ready', function () {
@@ -19,10 +20,6 @@ board.on('ready', function () {
   var takeoff = new five.Button(takeoffPin);
   var land = new five.Button(landPin);
   var flip = new five.Button(flipPin);
-
-  flip.on('down', function () {
-    console.log('flip');
-  });
 
   var upDown = new five.Sensor(upDownPin);
   var turn = new five.Sensor(turnPin);
@@ -39,6 +36,12 @@ board.on('ready', function () {
     client.write('land');
   });
 
+  flip.on('down', function () {
+    console.log('flip down');
+    client.write('flip');
+  });
+
+
   var frontBackLastValue = 10000;
   frontBack.on('read', function (err, value) {
     if (isSimilar(value, frontBackLastValue)) {
@@ -50,7 +53,7 @@ board.on('ready', function () {
 
     if (value > 550) {
       client.write('back');
-    } else if (value < 500) {
+    } else if (value < 450) {
       client.write('front');
     } else {
       client.write('fbstop');
@@ -70,7 +73,7 @@ board.on('ready', function () {
 
     if (value > 550) {
       client.write('right');
-    } else if (value < 500) {
+    } else if (value < 450) {
       client.write('left');
     } else {
       client.write('lrstop');
@@ -86,7 +89,7 @@ board.on('ready', function () {
     upDownLastValue = value;
     if (value > 550) {
       client.write('down');
-    } else if (value < 500) {
+    } else if (value < 450) {
       client.write('up');
     } else {
       client.write('udstop');
