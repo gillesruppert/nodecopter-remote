@@ -105,55 +105,230 @@ describe('remote', function () {
       delete this._Sensor;
     });
 
-    describe('#frontBackHandler()', function () {
+    describe('handlers', function () {
       beforeEach(function () {
-        this.stop = this.sinon.spy();
+        this.fbstop = this.sinon.spy();
         this.front = this.sinon.spy();
         this.back = this.sinon.spy();
-        this.remote.on('fbstop', this.stop);
+
+        this.lrstop = this.sinon.spy();
+        this.left = this.sinon.spy();
+        this.right = this.sinon.spy();
+
+        this.udstop = this.sinon.spy();
+        this.up = this.sinon.spy();
+        this.down = this.sinon.spy();
+
+        this.turnstop = this.sinon.spy();
+        this.clockwise = this.sinon.spy();
+        this.counterClockwise = this.sinon.spy();
+
+        this.remote.on('fbstop', this.fbstop);
         this.remote.on('front', this.front);
         this.remote.on('back', this.back);
+
+        this.remote.on('lrstop', this.lrstop);
+        this.remote.on('left', this.left);
+        this.remote.on('right', this.right);
+
+        this.remote.on('udstop', this.udstop);
+        this.remote.on('up', this.up);
+        this.remote.on('down', this.down);
+
+        this.remote.on('turnstop', this.turnstop);
+        this.remote.on('clockwise', this.clockwise);
+        this.remote.on('counterClockwise', this.counterClockwise);
+
         this.remote.frontBackHandler = this.remote.getHandler({
           STOP: 'fbstop',
           HIGH: 'back',
-          LOW: 'front',
-          VALUE: null
+          LOW: 'front'
+        });
+
+        this.remote.leftRightHandler = this.remote.getHandler({
+          STOP: 'lrstop',
+          HIGH: 'right',
+          LOW: 'left'
+        });
+
+        this.remote.upDownHandler = this.remote.getHandler({
+          STOP: 'udstop',
+          HIGH: 'down',
+          LOW: 'up'
+        });
+
+        this.remote.turnHandler = this.remote.getHandler({
+          STOP: 'turnstop',
+          HIGH: 'clockwise',
+          LOW: 'counterClockwise'
         });
       });
 
-      it('should emit the `fbstop` event if the value is in the middle', function () {
-        this.remote.frontBackHandler(null, 500);
-        expect(this.stop.callCount).to.be(1);
-        expect(this.front.callCount).to.be(0);
-        expect(this.back.callCount).to.be(0);
+      describe('front back handlers', function () {
+        it('should emit the `fbstop` event if the value is in the middle', function () {
+          this.remote.frontBackHandler(null, 500);
+          expect(this.fbstop.callCount).to.be(1);
+          expect(this.front.callCount).to.be(0);
+          expect(this.back.callCount).to.be(0);
+        });
+
+        it('should emit the `front` event if the value is below 450', function () {
+          this.remote.frontBackHandler(null, 200);
+          expect(this.fbstop.callCount).to.be(0);
+          expect(this.front.callCount).to.be(1);
+          expect(this.front.getCall(0).args[0]).to.be.within(0, 1);
+          expect(this.back.callCount).to.be(0);
+        });
+
+        it('should emit the `back` event if the value is above 573', function () {
+          this.remote.frontBackHandler(null, 600);
+          expect(this.fbstop.callCount).to.be(0);
+          expect(this.front.callCount).to.be(0);
+          expect(this.back.callCount).to.be(1);
+          expect(this.back.getCall(0).args[0]).to.be.within(0, 1);
+        });
+
+        it('should save the last value sent', function () {
+          this.remote.frontBackHandler(null, 700);
+          expect(this.remote.frontBackHandler.lastValue).to.be(700);
+        });
+
+        it('should not fire an event if 2 similar values are passed in a row', function () {
+          this.remote.frontBackHandler(null, 300);
+          expect(this.front.callCount).to.be(1);
+          this.remote.frontBackHandler(null, 305);
+          expect(this.front.callCount).to.be(1);
+        });
       });
 
-      it('should emit the `front` event if the value is below 450', function () {
-        this.remote.frontBackHandler(null, 200);
-        expect(this.stop.callCount).to.be(0);
-        expect(this.front.callCount).to.be(1);
-        expect(this.front.getCall(0).args[0]).to.be.within(0, 1);
-        expect(this.back.callCount).to.be(0);
+      describe('left right handlers', function () {
+        it('should emit the `lrstop` event if the value is in the middle', function () {
+          this.remote.leftRightHandler(null, 500);
+          expect(this.lrstop.callCount).to.be(1);
+          expect(this.left.callCount).to.be(0);
+          expect(this.right.callCount).to.be(0);
+        });
+
+        it('should emit the `left` event if the value is below 450', function () {
+          this.remote.leftRightHandler(null, 200);
+          expect(this.lrstop.callCount).to.be(0);
+          expect(this.left.callCount).to.be(1);
+          expect(this.left.getCall(0).args[0]).to.be.within(0, 1);
+          expect(this.right.callCount).to.be(0);
+        });
+
+        it('should emit the `right` event if the value is above 573', function () {
+          this.remote.leftRightHandler(null, 600);
+          expect(this.lrstop.callCount).to.be(0);
+          expect(this.left.callCount).to.be(0);
+          expect(this.right.callCount).to.be(1);
+          expect(this.right.getCall(0).args[0]).to.be.within(0, 1);
+        });
+
+        it('should save the last value sent', function () {
+          this.remote.leftRightHandler(null, 700);
+          expect(this.remote.leftRightHandler.lastValue).to.be(700);
+        });
+
+        it('should not fire an event if 2 similar values are passed in a row', function () {
+          this.remote.leftRightHandler(null, 300);
+          expect(this.left.callCount).to.be(1);
+          this.remote.leftRightHandler(null, 305);
+          expect(this.left.callCount).to.be(1);
+        });
       });
 
-      it('should emit the `back` event if the value is above 573', function () {
-        this.remote.frontBackHandler(null, 600);
-        expect(this.stop.callCount).to.be(0);
-        expect(this.front.callCount).to.be(0);
-        expect(this.back.callCount).to.be(1);
-        expect(this.back.getCall(0).args[0]).to.be.within(0, 1);
+      describe('up down handlers', function () {
+        it('should emit the `udstop` event if the value is in the middle', function () {
+          this.remote.upDownHandler(null, 500);
+          expect(this.udstop.callCount).to.be(1);
+          expect(this.up.callCount).to.be(0);
+          expect(this.down.callCount).to.be(0);
+        });
+
+        it('should emit the `up` event if the value is below 450', function () {
+          this.remote.upDownHandler(null, 200);
+          expect(this.udstop.callCount).to.be(0);
+          expect(this.up.callCount).to.be(1);
+          expect(this.up.getCall(0).args[0]).to.be.within(0, 1);
+          expect(this.down.callCount).to.be(0);
+        });
+
+        it('should emit the `down` event if the value is above 573', function () {
+          this.remote.upDownHandler(null, 600);
+          expect(this.udstop.callCount).to.be(0);
+          expect(this.up.callCount).to.be(0);
+          expect(this.down.callCount).to.be(1);
+          expect(this.down.getCall(0).args[0]).to.be.within(0, 1);
+        });
+
+        it('should save the last value sent', function () {
+          this.remote.upDownHandler(null, 700);
+          expect(this.remote.upDownHandler.lastValue).to.be(700);
+        });
+
+        it('should not fire an event if 2 similar values are passed in a row', function () {
+          this.remote.upDownHandler(null, 300);
+          expect(this.up.callCount).to.be(1);
+          this.remote.upDownHandler(null, 305);
+          expect(this.up.callCount).to.be(1);
+        });
       });
 
-      it('should save the last value sent', function () {
-        this.remote.frontBackHandler(null, 700);
-        expect(this.remote.frontBackHandler.lastValue).to.be(700);
+      describe('turn handlers', function () {
+        it('should emit the `turnstop` event if the value is in the middle', function () {
+          this.remote.turnHandler(null, 500);
+          expect(this.turnstop.callCount).to.be(1);
+          expect(this.counterClockwise.callCount).to.be(0);
+          expect(this.clockwise.callCount).to.be(0);
+        });
+
+        it('should emit the `counterClockwise` event if the value is below 450', function () {
+          this.remote.turnHandler(null, 200);
+          expect(this.turnstop.callCount).to.be(0);
+          expect(this.counterClockwise.callCount).to.be(1);
+          expect(this.counterClockwise.getCall(0).args[0]).to.be.within(0, 1);
+          expect(this.clockwise.callCount).to.be(0);
+        });
+
+        it('should emit the `clockwise` event if the value is above 573', function () {
+          this.remote.turnHandler(null, 600);
+          expect(this.turnstop.callCount).to.be(0);
+          expect(this.counterClockwise.callCount).to.be(0);
+          expect(this.clockwise.callCount).to.be(1);
+          expect(this.clockwise.getCall(0).args[0]).to.be.within(0, 1);
+        });
+
+        it('should save the last value sent', function () {
+          this.remote.turnHandler(null, 700);
+          expect(this.remote.turnHandler.lastValue).to.be(700);
+        });
+
+        it('should not fire an event if 2 similar values are passed in a row', function () {
+          this.remote.turnHandler(null, 300);
+          expect(this.counterClockwise.callCount).to.be(1);
+          this.remote.turnHandler(null, 305);
+          expect(this.counterClockwise.callCount).to.be(1);
+        });
       });
 
-      it('should not fire an event if 2 similar values are passed in a row', function () {
-        this.remote.frontBackHandler(null, 300);
-        expect(this.front.callCount).to.be(1);
-        this.remote.frontBackHandler(null, 305);
-        expect(this.front.callCount).to.be(1);
+      describe('multiple events', function () {
+        it('should fire the right events for the different movements', function () {
+          this.remote.turnHandler(null, 400);
+          this.remote.upDownHandler(null, 700);
+          this.remote.leftRightHandler(null, 800);
+
+          expect(this.counterClockwise.callCount).to.be(1);
+          expect(this.remote.turnHandler.lastValue).to.be(400);
+          expect(this.down.callCount).to.be(1);
+          expect(this.remote.upDownHandler.lastValue).to.be(700);
+          expect(this.right.callCount).to.be(1);
+          expect(this.remote.leftRightHandler.lastValue).to.be(800);
+          this.remote.leftRightHandler(null, 300);
+          expect(this.right.callCount).to.be(1);
+          expect(this.left.callCount).to.be(1);
+          expect(this.remote.leftRightHandler.lastValue).to.be(300);
+        });
       });
     });
 
