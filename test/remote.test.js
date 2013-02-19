@@ -107,74 +107,46 @@ describe('remote', function () {
 
     describe('handlers', function () {
       beforeEach(function () {
-        this.fbstop = this.sinon.spy();
         this.front = this.sinon.spy();
         this.back = this.sinon.spy();
 
-        this.lrstop = this.sinon.spy();
         this.left = this.sinon.spy();
         this.right = this.sinon.spy();
 
-        this.udstop = this.sinon.spy();
         this.up = this.sinon.spy();
         this.down = this.sinon.spy();
 
-        this.turnstop = this.sinon.spy();
         this.clockwise = this.sinon.spy();
         this.counterClockwise = this.sinon.spy();
 
-        this.remote.on('fbstop', this.fbstop);
         this.remote.on('front', this.front);
         this.remote.on('back', this.back);
 
-        this.remote.on('lrstop', this.lrstop);
         this.remote.on('left', this.left);
         this.remote.on('right', this.right);
 
-        this.remote.on('udstop', this.udstop);
         this.remote.on('up', this.up);
         this.remote.on('down', this.down);
 
-        this.remote.on('turnstop', this.turnstop);
         this.remote.on('clockwise', this.clockwise);
         this.remote.on('counterClockwise', this.counterClockwise);
 
-        this.remote.frontBackHandler = this.remote.getHandler({
-          STOP: 'fbstop',
-          HIGH: 'back',
-          LOW: 'front'
-        });
-
-        this.remote.leftRightHandler = this.remote.getHandler({
-          STOP: 'lrstop',
-          HIGH: 'right',
-          LOW: 'left'
-        });
-
-        this.remote.upDownHandler = this.remote.getHandler({
-          STOP: 'udstop',
-          HIGH: 'down',
-          LOW: 'up'
-        });
-
-        this.remote.turnHandler = this.remote.getHandler({
-          STOP: 'turnstop',
-          HIGH: 'clockwise',
-          LOW: 'counterClockwise'
-        });
+        this.remote.frontBackHandler = this.remote.getHandler({ HIGH: 'back', LOW: 'front' });
+        this.remote.leftRightHandler = this.remote.getHandler({ HIGH: 'right', LOW: 'left' });
+        this.remote.upDownHandler = this.remote.getHandler({ HIGH: 'down', LOW: 'up' });
+        this.remote.turnHandler = this.remote.getHandler({ HIGH: 'clockwise', LOW: 'counterClockwise' });
       });
 
       describe('front back handlers', function () {
-        it('should emit the `fbstop` event if the value is in the middle', function () {
+        it('should emit the `back` event with a value of 0 when in the middle', function () {
           this.remote.frontBackHandler(null, 500);
-          expect(this.fbstop.callCount).to.be(1);
           expect(this.front.callCount).to.be(0);
-          expect(this.back.callCount).to.be(0);
+          expect(this.back.callCount).to.be(1);
+          expect(this.back.args[0][0]).to.be(0);
         });
 
         it('should emit the `front` event if the value is below 450', function () {
           this.remote.frontBackHandler(null, 200);
-          expect(this.fbstop.callCount).to.be(0);
           expect(this.front.callCount).to.be(1);
           expect(this.front.getCall(0).args[0]).to.be.within(0, 1);
           expect(this.back.callCount).to.be(0);
@@ -182,7 +154,6 @@ describe('remote', function () {
 
         it('should emit the `back` event if the value is above 573', function () {
           this.remote.frontBackHandler(null, 600);
-          expect(this.fbstop.callCount).to.be(0);
           expect(this.front.callCount).to.be(0);
           expect(this.back.callCount).to.be(1);
           expect(this.back.getCall(0).args[0]).to.be.within(0, 1);
@@ -202,16 +173,15 @@ describe('remote', function () {
       });
 
       describe('left right handlers', function () {
-        it('should emit the `lrstop` event if the value is in the middle', function () {
+        it('should emit the `right` event with a value of 0 if in the middle', function () {
           this.remote.leftRightHandler(null, 500);
-          expect(this.lrstop.callCount).to.be(1);
           expect(this.left.callCount).to.be(0);
-          expect(this.right.callCount).to.be(0);
+          expect(this.right.callCount).to.be(1);
+          expect(this.right.args[0][0]).to.be(0);
         });
 
         it('should emit the `left` event if the value is below 450', function () {
           this.remote.leftRightHandler(null, 200);
-          expect(this.lrstop.callCount).to.be(0);
           expect(this.left.callCount).to.be(1);
           expect(this.left.getCall(0).args[0]).to.be.within(0, 1);
           expect(this.right.callCount).to.be(0);
@@ -219,7 +189,6 @@ describe('remote', function () {
 
         it('should emit the `right` event if the value is above 573', function () {
           this.remote.leftRightHandler(null, 600);
-          expect(this.lrstop.callCount).to.be(0);
           expect(this.left.callCount).to.be(0);
           expect(this.right.callCount).to.be(1);
           expect(this.right.getCall(0).args[0]).to.be.within(0, 1);
@@ -239,16 +208,15 @@ describe('remote', function () {
       });
 
       describe('up down handlers', function () {
-        it('should emit the `udstop` event if the value is in the middle', function () {
+        it('should emit the `down` event with a value of 0 if in the middle', function () {
           this.remote.upDownHandler(null, 500);
-          expect(this.udstop.callCount).to.be(1);
           expect(this.up.callCount).to.be(0);
-          expect(this.down.callCount).to.be(0);
+          expect(this.down.callCount).to.be(1);
+          expect(this.down.args[0][0]).to.be(0);
         });
 
         it('should emit the `up` event if the value is below 450', function () {
           this.remote.upDownHandler(null, 200);
-          expect(this.udstop.callCount).to.be(0);
           expect(this.up.callCount).to.be(1);
           expect(this.up.getCall(0).args[0]).to.be.within(0, 1);
           expect(this.down.callCount).to.be(0);
@@ -256,7 +224,6 @@ describe('remote', function () {
 
         it('should emit the `down` event if the value is above 573', function () {
           this.remote.upDownHandler(null, 600);
-          expect(this.udstop.callCount).to.be(0);
           expect(this.up.callCount).to.be(0);
           expect(this.down.callCount).to.be(1);
           expect(this.down.getCall(0).args[0]).to.be.within(0, 1);
@@ -276,16 +243,15 @@ describe('remote', function () {
       });
 
       describe('turn handlers', function () {
-        it('should emit the `turnstop` event if the value is in the middle', function () {
+        it('should emit the `clockwise` event with the value of 0 if in the middle', function () {
           this.remote.turnHandler(null, 500);
-          expect(this.turnstop.callCount).to.be(1);
           expect(this.counterClockwise.callCount).to.be(0);
-          expect(this.clockwise.callCount).to.be(0);
+          expect(this.clockwise.callCount).to.be(1);
+          expect(this.clockwise.args[0][0]).to.be(0);
         });
 
         it('should emit the `counterClockwise` event if the value is below 450', function () {
           this.remote.turnHandler(null, 200);
-          expect(this.turnstop.callCount).to.be(0);
           expect(this.counterClockwise.callCount).to.be(1);
           expect(this.counterClockwise.getCall(0).args[0]).to.be.within(0, 1);
           expect(this.clockwise.callCount).to.be(0);
@@ -293,7 +259,6 @@ describe('remote', function () {
 
         it('should emit the `clockwise` event if the value is above 573', function () {
           this.remote.turnHandler(null, 600);
-          expect(this.turnstop.callCount).to.be(0);
           expect(this.counterClockwise.callCount).to.be(0);
           expect(this.clockwise.callCount).to.be(1);
           expect(this.clockwise.getCall(0).args[0]).to.be.within(0, 1);

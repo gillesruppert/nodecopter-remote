@@ -1,5 +1,6 @@
 var five = require('johnny-five');
 var board = new five.Board();
+var Remote = require('./lib/remote');
 
 // start the drone. Once the server is listening, start up the remote
 
@@ -18,4 +19,33 @@ var pins = {
 
 
 board.on('ready', function () {
+  var remote = new Remote(pins);
+  remote.on('takeoff', function () {
+    console.log('takeoff');
+  });
+
+  remote.on('land', function () {
+    console.log('land');
+  });
+
+  remote.on('flip', function () {
+    console.log('flip');
+  });
+
+  remote.on('up', function (value) {
+    console.log('up', value);
+  });
+
+  remote.on('down', function (value) {
+    console.log('down', value);
+  });
+
+  remote.on('left', function (value) {
+    console.log('left', value);
+  });
+
+  remote.on('right', function (value) {
+    console.log('right', value);
+  });
+
 });
