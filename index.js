@@ -9,7 +9,8 @@ var Remote = require('./lib/remote');
 var pins = {
   takeoff: 2
 , land: 3
-, flip: 8
+, emergency: 8
+, flip: 9
 , upDown: 'A0'
 , leftRight: 'A1'
 , frontBack: 'A4'
