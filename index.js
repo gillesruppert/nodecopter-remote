@@ -12,9 +12,9 @@ var pins = {
 , emergency: 8
 , flip: 9
 , upDown: 'A0'
-, leftRight: 'A1'
+, turn: 'A1'
 , frontBack: 'A4'
-, turn: 'A5'
+, leftRight: 'A5'
 };
 
 
@@ -41,12 +41,12 @@ board.on('ready', function () {
     console.log('down', value);
   });
 
-  remote.on('left', function (value) {
-    console.log('left', value);
+  remote.on('counterClockwise', function (value) {
+    console.log('counterClockwise', value);
   });
 
-  remote.on('right', function (value) {
-    console.log('right', value);
+  remote.on('clockwise', function (value) {
+    console.log('clockwise', value);
   });
 
 });
