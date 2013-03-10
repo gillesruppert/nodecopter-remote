@@ -1,52 +1,66 @@
 var five = require('johnny-five');
-var board = new five.Board();
 var Remote = require('./lib/remote');
+var arDrone = require('ar-drone');
+
+var board = new five.Board();
+var client = arDrone.createClient();
 
 // start the drone. Once the server is listening, start up the remote
 
 
 // pins for the remote!
 var pins = {
-  takeoff: 2
-, land: 3
-, emergency: 8
-, flip: 9
-, upDown: 'A0'
-, turn: 'A1'
-, frontBack: 'A4'
-, leftRight: 'A5'
+  takeoffLand: 7
+, button1: 8
+, button2: 9
+
+, frontBack: 'A0'
+, leftRight: 'A1'
+
+, upDown: 'A2'
+, turn: 'A3'
 };
 
+// 'phiM30Deg', 'phi30Deg', 'thetaM30Deg', 'theta30Deg', 'theta20degYaw200deg',
+// 'theta20degYawM200deg', 'turnaround', 'turnaroundGodown', 'yawShake',
+// 'yawDance', 'phiDance', 'thetaDance', 'vzDance', 'wave', 'phiThetaMixed',
+// 'doublePhiThetaMixed', 'flipAhead', 'flipBehind', 'flipLeft', 'flipRight'
+//
+// 'blinkGreenRed', 'blinkGreen', 'blinkRed', 'blinkOrange', 'snakeGreenRed',
+// 'fire', 'standard', 'red', 'green', 'redSnake', 'blank', 'rightMissile',
+// 'leftMissile', 'doubleMissile', 'frontLeftGreenOthersRed',
+// 'frontRightGreenOthersRed', 'rearRightGreenOthersRed',
+// 'rearLeftGreenOthersRed', 'leftGreenRightRed', 'leftRedRightGreen',
+// 'blinkStandard'
+
+var animations = [
+  'blinkGreenRed'
+, 'blinkOrange'
+];
+
+var cmds = [
+  'takeoff'
+, 'land'
+, 'up'
+, 'down'
+, 'clockwise'
+, 'counterClockwise'
+, 'front'
+, 'back'
+, 'left'
+, 'right'
+, 'animate'
+, 'animateLed'
+];
 
 
 board.on('ready', function () {
-  var remote = new Remote(pins);
-  remote.on('takeoff', function () {
-    console.log('takeoff');
-  });
+  var remote = new Remote(pins, animations);
 
-  remote.on('land', function () {
-    console.log('land');
+  cmds.forEach(function (cmd) {
+    remote.on(cmd, function (value) {
+      console.log(cmd, value);
+      client[cmd](value);
+    });
   });
-
-  remote.on('flip', function () {
-    console.log('flip');
-  });
-
-  remote.on('up', function (value) {
-    console.log('up', value);
-  });
-
-  remote.on('down', function (value) {
-    console.log('down', value);
-  });
-
-  remote.on('counterClockwise', function (value) {
-    console.log('counterClockwise', value);
-  });
-
-  remote.on('clockwise', function (value) {
-    console.log('clockwise', value);
-  });
-
 });
