@@ -35,7 +35,7 @@ var pins = {
 
 var animations = [
   'blinkGreenRed'
-, 'blinkOrange'
+, 'flipLeft'
 ];
 
 var cmds = [
@@ -50,7 +50,7 @@ var cmds = [
 , 'left'
 , 'right'
 , 'animate'
-, 'animateLed'
+, 'animateLeds'
 ];
 
 
@@ -58,9 +58,9 @@ board.on('ready', function () {
   var remote = new Remote(pins, animations);
 
   cmds.forEach(function (cmd) {
-    remote.on(cmd, function (value) {
-      console.log(cmd, value);
-      client[cmd](value);
+    remote.on(cmd, function (value, hz, dur) {
+      console.log(cmd, value, hz, dur);
+      client[cmd](value, hz, dur);
     });
   });
 });
