@@ -3,7 +3,7 @@ var Remote = require('./lib/remote');
 var arDrone = require('ar-drone');
 
 var board = new five.Board();
-var client = arDrone.createClient();
+var drone = arDrone.createClient();
 
 // start the drone. Once the server is listening, start up the remote
 
@@ -60,7 +60,7 @@ board.on('ready', function () {
   cmds.forEach(function (cmd) {
     remote.on(cmd, function (value, hz, dur) {
       console.log(cmd, value, hz, dur);
-      client[cmd](value, hz, dur);
+      drone[cmd](value, hz, dur);
     });
   });
 });
