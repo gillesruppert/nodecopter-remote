@@ -5,7 +5,6 @@ var arDrone = require('ar-drone');
 var board = new five.Board();
 var drone = arDrone.createClient();
 
-// start the drone. Once the server is listening, start up the remote
 
 
 // pins for the remote!
@@ -60,6 +59,7 @@ board.on('ready', function () {
   cmds.forEach(function (cmd) {
     remote.on(cmd, function (value, hz, dur) {
       console.log(cmd, value, hz, dur);
+      if (cmd === 'takeoff') drone.disableEmergency();
       drone[cmd](value, hz, dur);
     });
   });
