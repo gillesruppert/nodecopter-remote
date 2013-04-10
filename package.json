@@ -17,8 +17,8 @@
   "license": "BSD",
   "dependencies": {
     "ar-drone": "0.0.5",
-    "johnny-five": "~0.5.14",
-    "temporal": "~0.2.2"
+    "temporal": "~0.2.2",
+    "dronestream": "~1.0.3"
   },
   "devDependencies": {
     "expect.js": "~0.2.0",
