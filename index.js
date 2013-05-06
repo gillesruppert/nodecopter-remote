@@ -51,7 +51,7 @@ var pins = {
 // 'blinkStandard'
 
 var animations = [
-  'blinkGreenRed'
+  'turnaroundGodown'
 , 'flipLeft'
 ];
 
