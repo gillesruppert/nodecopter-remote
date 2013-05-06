@@ -3,7 +3,7 @@ var Remote = require('./lib/remote');
 var arDrone = require('ar-drone');
 
 var board = new five.Board();
-var drone = arDrone.createClient();
+var client = arDrone.createClient();
 
 var dronestream = require('dronestream');
 var http = require('http');
@@ -19,6 +19,8 @@ var server = http.createServer(function (req, res) {
 dronestream.listen(server);
 server.listen(5555);
 
+client.config('general:navdata_demo', 'FALSE');
+client.on('navdata', console.log);
 
 
 
@@ -75,8 +77,12 @@ board.on('ready', function () {
   cmds.forEach(function (cmd) {
     remote.on(cmd, function (value, hz, dur) {
       console.log(cmd, value, hz, dur);
-      if (cmd === 'takeoff') drone.disableEmergency();
-      drone[cmd](value, hz, dur);
+      if (cmd === 'takeoff') {
+        client.disableEmergency();
+        process.nextTick(client[cmd].bind(client, value, hz, dur));
+      } else {
+        client[cmd](value, hz, dur);
+      }
     });
   });
 });
