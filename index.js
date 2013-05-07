@@ -21,6 +21,7 @@ server.listen(5555);
 
 client.config('general:navdata_demo', 'FALSE');
 client.on('navdata', console.log);
+// will also emit `landed`, `hovering`, `flying`, `landing`, `batteryChange`, `altitudeChange`
 
 
 
