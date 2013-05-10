@@ -1,16 +1,16 @@
 var five = require('johnny-five');
-var Remote = require('./lib/remote');
 var arDrone = require('ar-drone');
-
-var board = new five.Board();
-var client = arDrone.createClient();
-
+var Remote = require('./lib/remote');
 var dronestream = require('dronestream');
 var http = require('http');
 var fs = require('fs');
 
+// initialise the Arduino and the the drone client
+var board = new five.Board();
+var client = arDrone.createClient();
 
 
+// enable the stream
 var server = http.createServer(function (req, res) {
   fs.createReadStream(__dirname + '/index.html').pipe(res);
 
@@ -19,26 +19,15 @@ var server = http.createServer(function (req, res) {
 dronestream.listen(server);
 server.listen(5555);
 
+
+// enable the nav data
 client.config('general:navdata_demo', 'FALSE');
-client.on('navdata', console.log);
+//client.on('navdata', console.log);
 // will also emit `landed`, `hovering`, `flying`, `landing`, `batteryChange`, `altitudeChange`
 
 
-
-
-// pins for the remote!
-var pins = {
-  takeoffLand: 7
-, button1: 8
-, button2: 9
-
-, frontBack: 'A0'
-, leftRight: 'A1'
-
-, upDown: 'A2'
-, turn: 'A3'
-};
-
+// These animation are available. 1st block are regular animations, 2nd are
+// led animations
 // 'phiM30Deg', 'phi30Deg', 'thetaM30Deg', 'theta30Deg', 'theta20degYaw200deg',
 // 'theta20degYawM200deg', 'turnaround', 'turnaroundGodown', 'yawShake',
 // 'yawDance', 'phiDance', 'thetaDance', 'vzDance', 'wave', 'phiThetaMixed',
@@ -50,11 +39,6 @@ var pins = {
 // 'frontRightGreenOthersRed', 'rearRightGreenOthersRed',
 // 'rearLeftGreenOthersRed', 'leftGreenRightRed', 'leftRedRightGreen',
 // 'blinkStandard'
-
-var animations = [
-  'turnaroundGodown'
-, 'flipLeft'
-];
 
 var cmds = [
   'takeoff'
@@ -73,17 +57,24 @@ var cmds = [
 
 
 board.on('ready', function () {
-  var remote = new Remote(pins, animations);
+  var remote = new Remote();
 
   cmds.forEach(function (cmd) {
-    remote.on(cmd, function (value, hz, dur) {
-      console.log(cmd, value, hz, dur);
-      if (cmd === 'takeoff') {
-        client.disableEmergency();
-        process.nextTick(client[cmd].bind(client, value, hz, dur));
-      } else {
-        client[cmd](value, hz, dur);
-      }
-    });
+    remote.on(cmd, getCmd(cmd));
   });
+
+
+  // returns the 
+  function getCmd(cmd) {
+    if (cmd === 'takeoff') {
+      return function (value, hz, dur) {
+        client.disableEmergency();
+        process.nextTick(
+          client[cmd].bind(client, value, hz, dur)
+        );
+      };
+    } else {
+      return client[cmd].bind(client);
+    }
+  }
 });
