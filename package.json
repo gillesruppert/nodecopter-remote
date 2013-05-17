@@ -1,8 +1,8 @@
 {
   "name": "nodecopter-remote",
-  "version": "0.0.0",
-  "description": "Arduino remote for the ARDrone",
-  "main": "index.js",
+  "version": "0.0.1",
+  "description": "build your own Arduino remote control and create commands for the Parrot AR Drone",
+  "main": "remote.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec --recursive ./test/"
   },
@@ -10,19 +10,18 @@
   "keywords": [
     "nodecopter",
     "ardrone",
-    "infra-red",
-    "remote"
+    "remote",
+    "arduino"
   ],
   "author": "Gilles Ruppert <gilles@madeofbytes.com>",
-  "license": "BSD",
+  "license": "MIT",
   "dependencies": {
-    "ar-drone": "0.0.5",
-    "temporal": "~0.2.2",
-    "dronestream": "~1.0.3"
+    "johnny-five": "~0"
   },
   "devDependencies": {
-    "expect.js": "~0.2.0",
-    "sinon": "~1.5.2",
-    "mocha": "~1.8.1"
+    "expect.js": "~0",
+    "sinon": "~1",
+    "mocha": "~1",
+    "ar-drone": "~0"
   }
 }

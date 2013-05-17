@@ -37,8 +37,8 @@ var Remote = module.exports = function Remote (pins, anims) {
   };
 
   anims = anims || [
-    'turnaroundGodown'
-  , 'flipLeft'
+    'flipLeft'
+  , 'flipRight'
   ];
 
 

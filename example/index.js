@@ -1,23 +1,10 @@
 var five = require('johnny-five');
 var arDrone = require('ar-drone');
-var dronestream = require('dronestream');
-var http = require('http');
-var fs = require('fs');
-var Remote = require('./lib/remote');
+var Remote = require('../remote');
 
 // initialise the Arduino and the the drone client
 var board = new five.Board();
 var client = arDrone.createClient();
-
-
-// enable the stream
-var server = http.createServer(function (req, res) {
-  fs.createReadStream(__dirname + '/index.html').pipe(res);
-});
-
-dronestream.listen(server);
-server.listen(5555);
-
 
 // make sure the client always calls disableEmergency() before taking off
 var takeoff = client.takeoff;
@@ -46,6 +33,7 @@ var cmds = [
 board.on('ready', function () {
   var remote = new Remote();
 
+  // iterate over all the commands and bind them to the event listeners
   cmds.forEach(function (cmd) {
     remote.on(cmd, client[cmd].bind(client));
   });
