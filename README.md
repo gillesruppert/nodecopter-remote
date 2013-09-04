@@ -93,6 +93,9 @@ Available animations:
 **N.B: you need to inject your copy of `johnny-five` into the Remote constructor now.
 Take a look at the updated example. The example will work.**
 
+## test
+to run the test, run `npm install` in the directory and run `npm test`.
+
 ## building the remote
 You can find an image of the finished remote in `example/remote.jpg`.
 
