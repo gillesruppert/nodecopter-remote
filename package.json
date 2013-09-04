@@ -1,6 +1,6 @@
 {
   "name": "nodecopter-remote",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "build your own Arduino remote control and create commands for the Parrot AR Drone",
   "main": "remote.js",
   "scripts": {
@@ -16,9 +16,9 @@
   "author": "Gilles Ruppert <gilles@madeofbytes.com>",
   "license": "MIT",
   "dependencies": {
-    "johnny-five": "~0"
   },
   "devDependencies": {
+    "johnny-five": "~0",
     "expect.js": "~0",
     "sinon": "~1",
     "mocha": "~1",

@@ -1,4 +1,3 @@
-var five = require('johnny-five');
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
 
@@ -20,7 +19,7 @@ var animations = [
   'doublePhiThetaMixed', 'flipAhead', 'flipBehind', 'flipLeft', 'flipRight'
 ];
 
-var Remote = module.exports = function Remote (pins, anims) {
+var Remote = module.exports = function Remote (five, pins, anims) {
   EventEmitter.call(this);
 
   // set defaults

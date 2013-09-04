@@ -52,7 +52,7 @@ not, you can override the pin map. You can also override the default animations.
 
 An example of overriding the defaults:
 ```javascript
-  var remote = new Remote({
+  var remote = new Remote(five, {
       takeoffLand: 7
     , button1: 8 // joystick button left
     , button2: 9 // joystick button right
@@ -89,6 +89,9 @@ Available animations:
   'doublePhiThetaMixed', 'flipAhead', 'flipBehind', 'flipLeft', 'flipRight'
 ];
 ```
+
+**N.B: you need to inject your copy of `johnny-five` into the Remote constructor now.
+Take a look at the updated example. The example will work.**
 
 ## building the remote
 You can find an image of the finished remote in `example/remote.jpg`.

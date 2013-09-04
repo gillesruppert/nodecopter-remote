@@ -31,7 +31,7 @@ var cmds = [
 
 // initialise the remote once the board is ready
 board.on('ready', function () {
-  var remote = new Remote();
+  var remote = new Remote(five);
 
   // iterate over all the commands and bind them to the event listeners
   cmds.forEach(function (cmd) {
