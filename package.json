@@ -6,7 +6,10 @@
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec --recursive ./test/"
   },
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gillesruppert/nodecopter-remote.git"
+  },
   "keywords": [
     "nodecopter",
     "ardrone",
