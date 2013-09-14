@@ -4,6 +4,9 @@ Nodecopter remote
 Nodecopter remote is a little project for building your own remote control with
 Arduino and controlling a Parrot AR Drone.
 
+![The Nodecopter
+Remote](https://raw.github.com/gillesruppert/nodecopter-remote/master/example/arduino-remote.jpg)
+
 ## installation
 ```shell
 npm install nodecopter-remote
